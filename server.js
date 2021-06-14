@@ -1,9 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
 const app = express();
 const port = 3000;
 const MONGODB_URL = 'mongodb://localhost/todolist';
 
+app.use(morgan('tiny'));
 app.use(express.json()); // body parser
 
 mongoose
