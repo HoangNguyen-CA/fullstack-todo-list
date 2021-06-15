@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const app = express();
-const port = 3000;
+const port = 5000;
 const MONGODB_URL = 'mongodb://localhost/todolist';
 
 app.use(morgan('tiny'));
