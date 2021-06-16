@@ -4,6 +4,12 @@
   box-sizing: border-box;
 }
 
+html {
+  --colors-dark: #161616;
+  --colors-primary: rgb(86, 12, 255);
+  --colors-light: white;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',

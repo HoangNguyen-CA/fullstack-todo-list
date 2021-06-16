@@ -1,0 +1,21 @@
+.todosContainer {
+  width: 100%;
+  margin-top: 2em;
+}
+
+.mainContainer {
+  width: 30em;
+  padding: 2em 1.5em;
+  border-radius: 0.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 3em;
+  background-color: var(--colors-dark);
+  color: white;
+}
+
+.header {
+  font-size: 1.8;
+  margin-bottom: 0.5em;
+}

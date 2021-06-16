@@ -1,0 +1,19 @@
+import React from 'react';
+import styles from './TodoInput.module.css';
+
+const TodoInput = (props) => {
+  return (
+    <div className={styles.container}>
+      <input
+        value={props.val}
+        onChange={props.change}
+        className={styles.input}
+      ></input>
+      <button onClick={props.submit} className={styles.button}>
+        Add Todo
+      </button>
+    </div>
+  );
+};
+
+export default TodoInput;
