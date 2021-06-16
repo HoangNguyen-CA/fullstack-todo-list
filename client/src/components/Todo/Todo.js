@@ -9,7 +9,10 @@ const Todo = (props) => {
       <li className={styles.todo}>
         <p>{props.text}</p>
         <div>
-          <FaRegEdit className={styles.icon}></FaRegEdit>
+          <FaRegEdit
+            className={styles.icon}
+            onClick={() => props.edit(props.id)}
+          ></FaRegEdit>
           <RiDeleteBin2Line className={styles.icon}></RiDeleteBin2Line>
         </div>
       </li>

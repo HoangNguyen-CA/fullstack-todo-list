@@ -8,9 +8,10 @@ const TodoInput = (props) => {
         value={props.val}
         onChange={props.change}
         className={styles.input}
+        autoFocus
       ></input>
       <button onClick={props.submit} className={styles.button}>
-        Add Todo
+        {props.label}
       </button>
     </div>
   );
