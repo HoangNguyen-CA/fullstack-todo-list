@@ -7,8 +7,8 @@ const Todo = (props) => {
   return (
     <>
       <li className={styles.todo}>
-        <p>{props.text}</p>
-        <div>
+        <p className={styles.text}>{props.text}</p>
+        <div className={styles.iconsContainer}>
           <FaRegEdit
             className={styles.icon}
             onClick={() => props.edit(props.id)}

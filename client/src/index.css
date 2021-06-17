@@ -7,7 +7,18 @@
 html {
   --colors-dark: #161616;
   --colors-primary: rgb(86, 12, 255);
+  --colors-primary-dark: rgb(65, 0, 218);
+  --colors-primary-light: rgb(149, 36, 255);
+  --colors-blue: #127bff;
+  --colors-blue-dark: rgb(5, 99, 214);
+  --colors-orange: #fe5413;
+  --colors-orange-dark: #d13e04;
+
+  --colors-pink: #fa06b9;
+  --colors-pink-dark: #b40385;
+
   --colors-light: white;
+  --radius-normal: 5px;
 }
 
 body {
