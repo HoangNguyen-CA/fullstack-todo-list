@@ -4,10 +4,20 @@ import { FaRegEdit } from 'react-icons/fa';
 import { RiDeleteBin2Line } from 'react-icons/ri';
 
 const Todo = (props) => {
+  const todoStyles = [styles.todo];
+  if (props.completed) {
+    todoStyles.push(styles.completed);
+  }
+
   return (
     <>
-      <li className={styles.todo}>
-        <p className={styles.text}>{props.text}</p>
+      <li className={todoStyles.join(' ')}>
+        <p
+          className={styles.text}
+          onClick={() => props.toggleComplete(props.id)}
+        >
+          {props.text}
+        </p>
         <div className={styles.iconsContainer}>
           <FaRegEdit
             className={styles.icon}

@@ -48,6 +48,7 @@
   overflow-wrap: normal;
   word-wrap: break-word;
   margin-right: 0.3em;
+  cursor: pointer;
 }
 
 .iconsContainer {
@@ -61,4 +62,12 @@
   margin-left: 0.3em;
   font-size: 1.5em;
   vertical-align: middle;
+}
+
+.completed {
+  text-decoration: line-through;
+  background: linear-gradient(
+    var(--colors-gray),
+    var(--colors-gray)
+  ) !important;
 }

@@ -41,7 +41,7 @@ export default class TodoList extends Component {
       const data = await res.json();
 
       //update state with result
-      const newTodos = this.state.todos;
+      const newTodos = { ...this.state.todos };
       newTodos[data._id] = { text: data.text, completed: data.completed };
       this.setState({ todos: newTodos, addTodoVal: '' });
     } catch (e) {
@@ -50,13 +50,11 @@ export default class TodoList extends Component {
   };
 
   handleStartEdit = (id) => {
-    console.log(this.state.todos[id]);
-
-    const newText = this.state.todos[id].text;
+    const editText = this.state.todos[id].text;
     this.setState({
       isEditting: true,
       currentEditID: id,
-      editTodoVal: newText,
+      editTodoVal: editText,
     });
   };
 
@@ -77,7 +75,7 @@ export default class TodoList extends Component {
         headers: { 'Content-Type': 'application/json' },
       });
       const data = await res.json();
-      const newTodos = this.state.todos;
+      const newTodos = { ...this.state.todos };
       newTodos[data._id] = {
         text: data.text,
         completed: data.completed,
@@ -96,8 +94,31 @@ export default class TodoList extends Component {
       const data = await res.json();
       if (data == null) throw new Error('deletion failed');
 
-      const newTodos = this.state.todos;
+      const newTodos = { ...this.state.todos };
       delete newTodos[id];
+      this.setState({ todos: newTodos });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  handleToggleComplete = async (id) => {
+    const newTodo = { ...this.state.todos[id] };
+    newTodo.completed = !newTodo.completed;
+    try {
+      const res = await fetch(`/api/todos/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(newTodo),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      if (data == null) throw new Error('deletion failed');
+
+      const newTodos = { ...this.state.todos };
+      newTodos[data._id] = {
+        text: data.text,
+        completed: data.completed,
+      };
       this.setState({ todos: newTodos });
     } catch (e) {
       console.log(e);
@@ -114,6 +135,8 @@ export default class TodoList extends Component {
           text={todo.text}
           edit={this.handleStartEdit}
           delete={this.handleDeleteTodo}
+          completed={todo.completed}
+          toggleComplete={this.handleToggleComplete}
         ></Todo>
       );
     }
