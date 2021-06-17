@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 // @access Public
 router.post('/', async (req, res) => {
   const { text } = req.body;
-  let newTodo = new Todo({ text });
+  let newTodo = new Todo({ text, completed: false });
   const savedTodo = await newTodo.save();
   res.send(savedTodo);
 });
@@ -34,8 +34,12 @@ router.delete('/:id', async (req, res) => {
 // @access Public
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { text } = req.body;
-  const updatedTodo = await Todo.findByIdAndUpdate(id, { text }, { new: true });
+  const { text, completed } = req.body;
+  const updatedTodo = await Todo.findByIdAndUpdate(
+    id,
+    { text, completed },
+    { new: true }
+  );
   res.json(updatedTodo);
 });
 

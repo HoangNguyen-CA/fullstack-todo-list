@@ -12,67 +12,98 @@ export default class TodoList extends Component {
     currentEditID: '',
   };
 
-  //TODO: fix
-  async getTodos() {
+  async loadTodos() {
     const res = await fetch('/api/todos');
     const data = await res.json();
     const newTodos = {};
     for (const todo of data) {
       newTodos[todo._id] = { text: todo.text, completed: todo.completed };
     }
-    console.log(newTodos);
     this.setState({ todos: newTodos });
   }
 
   componentDidMount() {
-    this.getTodos();
-    /*
-    this.setState({
-      todos: {
-        1: { text: 'test1', completed: false },
-        2: { text: 'test2', completed: false },
-        3: { text: 'test3', completed: false },
-      },
-    });*/
+    this.loadTodos();
   }
 
-  handleAddInputChange = (e) => {
+  handleAddChange = (e) => {
     this.setState({ addTodoVal: e.target.value });
   };
 
-  handleAddInputSubmit = (e) => {
-    const newTodos = this.state.todos;
-    const id = Math.random();
-    newTodos[id] = { text: this.state.addTodoVal, completed: false };
-    this.setState({ todos: newTodos, addTodoVal: '' });
+  handleAddTodo = async () => {
+    const newTodo = { text: this.state.addTodoVal };
+    try {
+      const res = await fetch('/api/todos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newTodo),
+      });
+      const data = await res.json();
+
+      //update state with result
+      const newTodos = this.state.todos;
+      newTodos[data._id] = { text: data.text, completed: data.completed };
+      this.setState({ todos: newTodos, addTodoVal: '' });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  handleEditInputChange = (e) => {
-    this.setState({ editTodoVal: e.target.value });
-  };
+  handleStartEdit = (id) => {
+    console.log(this.state.todos[id]);
 
-  handleEditInputSubmit = () => {
-    const newTodos = this.state.todos;
-    newTodos[this.state.currentEditID] = {
-      text: this.state.editTodoVal,
-      completed: this.state.todos[this.state.currentEditID].completed,
-    };
-    this.setState({ todos: newTodos, isEditting: false });
-  };
-
-  handleEditTodo = (id) => {
+    const newText = this.state.todos[id].text;
     this.setState({
       isEditting: true,
       currentEditID: id,
-      editTodoVal: this.state.todos[id].text,
+      editTodoVal: newText,
     });
   };
 
-  handleDeleteTodo = (id) => {
-    const newTodos = this.state.todos;
-    delete newTodos[id];
-    this.setState({ todos: newTodos });
+  handleEditChange = (e) => {
+    this.setState({ editTodoVal: e.target.value });
   };
+
+  handleEditTodo = async () => {
+    try {
+      const id = this.state.currentEditID;
+      const newTodo = {
+        text: this.state.editTodoVal,
+        completed: this.state.todos[id].completed,
+      };
+      const res = await fetch(`/api/todos/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(newTodo),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      const newTodos = this.state.todos;
+      newTodos[data._id] = {
+        text: data.text,
+        completed: data.completed,
+      };
+      this.setState({ todos: newTodos, isEditting: false });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  handleDeleteTodo = async (id) => {
+    try {
+      const res = await fetch(`/api/todos/${id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data == null) throw new Error('deletion failed');
+
+      const newTodos = this.state.todos;
+      delete newTodos[id];
+      this.setState({ todos: newTodos });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   render() {
     const todos = [];
     for (let [id, todo] of Object.entries(this.state.todos)) {
@@ -81,7 +112,7 @@ export default class TodoList extends Component {
           id={id}
           key={id}
           text={todo.text}
-          edit={this.handleEditTodo}
+          edit={this.handleStartEdit}
           delete={this.handleDeleteTodo}
         ></Todo>
       );
@@ -93,15 +124,15 @@ export default class TodoList extends Component {
 
         <TodoInput
           val={this.state.addTodoVal}
-          change={this.handleAddInputChange}
-          submit={this.handleAddInputSubmit}
+          change={this.handleAddChange}
+          submit={this.handleAddTodo}
           label='Add Todo'
         ></TodoInput>
         {this.state.isEditting ? (
           <TodoInput
             val={this.state.editTodoVal}
-            change={this.handleEditInputChange}
-            submit={this.handleEditInputSubmit}
+            change={this.handleEditChange}
+            submit={this.handleEditTodo}
             label='Save Edit'
           ></TodoInput>
         ) : (
