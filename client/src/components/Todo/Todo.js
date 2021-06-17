@@ -13,7 +13,10 @@ const Todo = (props) => {
             className={styles.icon}
             onClick={() => props.edit(props.id)}
           ></FaRegEdit>
-          <RiDeleteBin2Line className={styles.icon}></RiDeleteBin2Line>
+          <RiDeleteBin2Line
+            className={styles.icon}
+            onClick={() => props.delete(props.id)}
+          ></RiDeleteBin2Line>
         </div>
       </li>
     </>

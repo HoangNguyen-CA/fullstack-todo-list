@@ -5,28 +5,35 @@ import styles from './TodoList.module.css';
 
 export default class TodoList extends Component {
   state = {
-    todos: [],
+    todos: {},
     addTodoVal: '',
     editTodoVal: '',
     isEditting: false,
     currentEditID: '',
   };
 
+  //TODO: fix
   async getTodos() {
     const res = await fetch('/api/todos');
     const data = await res.json();
-    this.setState({ todos: data });
+    const newTodos = {};
+    for (const todo of data) {
+      newTodos[todo._id] = { text: todo.text, completed: todo.completed };
+    }
+    console.log(newTodos);
+    this.setState({ todos: newTodos });
   }
 
   componentDidMount() {
     this.getTodos();
+    /*
     this.setState({
-      todos: [
-        { id: 1, text: 'test', completed: false },
-        { id: 2, text: 'test2', completed: false },
-        { id: 3, text: 'test3', completed: false },
-      ],
-    });
+      todos: {
+        1: { text: 'test1', completed: false },
+        2: { text: 'test2', completed: false },
+        3: { text: 'test3', completed: false },
+      },
+    });*/
   }
 
   handleAddInputChange = (e) => {
@@ -34,8 +41,10 @@ export default class TodoList extends Component {
   };
 
   handleAddInputSubmit = (e) => {
-    const newTodo = { id: Math.random(), text: this.state.addTodoVal };
-    this.setState({ todos: this.state.todos.concat(newTodo) });
+    const newTodos = this.state.todos;
+    const id = Math.random();
+    newTodos[id] = { text: this.state.addTodoVal, completed: false };
+    this.setState({ todos: newTodos, addTodoVal: '' });
   };
 
   handleEditInputChange = (e) => {
@@ -44,38 +53,40 @@ export default class TodoList extends Component {
 
   handleEditInputSubmit = () => {
     const newTodos = this.state.todos;
-    const index = newTodos.findIndex(
-      (todo) => todo.id === this.state.currentEditID
-    );
-    const newTodo = {
-      id: this.state.currentEditID,
+    newTodos[this.state.currentEditID] = {
       text: this.state.editTodoVal,
+      completed: this.state.todos[this.state.currentEditID].completed,
     };
-    newTodos[index] = newTodo;
     this.setState({ todos: newTodos, isEditting: false });
   };
 
-  handleStartEditing = (id) => {
-    const foundTodo = this.state.todos.find((todo) => todo.id === id);
-
+  handleEditTodo = (id) => {
     this.setState({
       isEditting: true,
       currentEditID: id,
-      editTodoVal: foundTodo.text,
+      editTodoVal: this.state.todos[id].text,
     });
   };
 
+  handleDeleteTodo = (id) => {
+    const newTodos = this.state.todos;
+    delete newTodos[id];
+    this.setState({ todos: newTodos });
+  };
   render() {
-    const todos = this.state.todos.map((todo, index) => {
-      return (
+    const todos = [];
+    for (let [id, todo] of Object.entries(this.state.todos)) {
+      todos.push(
         <Todo
-          id={todo.id}
-          key={todo.id}
+          id={id}
+          key={id}
           text={todo.text}
-          edit={this.handleStartEditing}
+          edit={this.handleEditTodo}
+          delete={this.handleDeleteTodo}
         ></Todo>
       );
-    });
+    }
+
     return (
       <div className={styles.mainContainer}>
         <h1 className={styles.header}>Todo List</h1>
