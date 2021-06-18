@@ -3,6 +3,7 @@ import Todo from '../../components/Todo/Todo';
 import TodoInput from '../../components/TodoInput/TodoInput';
 import Button from '../../components/Button/Button';
 import styles from './TodoList.module.css';
+import Loading from '../../components/Loading/Loading';
 
 export default class TodoList extends Component {
   state = {
@@ -11,6 +12,7 @@ export default class TodoList extends Component {
       completed: true,
       uncompleted: true,
     },
+    loading: false,
     addTodoVal: '',
     editTodoVal: '',
     isEditting: false,
@@ -38,6 +40,8 @@ export default class TodoList extends Component {
   handleAddTodo = async () => {
     const newTodo = { text: this.state.addTodoVal };
     try {
+      this.setState({ loading: true });
+
       const res = await fetch('/api/todos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -48,9 +52,9 @@ export default class TodoList extends Component {
       //update state with result
       const newTodos = { ...this.state.todos };
       newTodos[data._id] = { text: data.text, completed: data.completed };
-      this.setState({ todos: newTodos, addTodoVal: '' });
+      this.setState({ todos: newTodos, addTodoVal: '', loading: false });
     } catch (e) {
-      console.log(e);
+      console.log('ERROR');
     }
   };
 
@@ -74,25 +78,29 @@ export default class TodoList extends Component {
         text: this.state.editTodoVal,
         completed: this.state.todos[id].completed,
       };
+
+      this.setState({ loading: true });
       const res = await fetch(`/api/todos/${id}`, {
         method: 'PUT',
         body: JSON.stringify(newTodo),
         headers: { 'Content-Type': 'application/json' },
       });
       const data = await res.json();
+
       const newTodos = { ...this.state.todos };
       newTodos[data._id] = {
         text: data.text,
         completed: data.completed,
       };
-      this.setState({ todos: newTodos, isEditting: false });
+      this.setState({ todos: newTodos, isEditting: false, loading: false });
     } catch (e) {
-      console.log(e);
+      console.log('ERROR');
     }
   };
 
   handleDeleteTodo = async (id) => {
     try {
+      this.setState({ loading: true });
       const res = await fetch(`/api/todos/${id}`, {
         method: 'DELETE',
       });
@@ -101,9 +109,9 @@ export default class TodoList extends Component {
 
       const newTodos = { ...this.state.todos };
       delete newTodos[id];
-      this.setState({ todos: newTodos });
+      this.setState({ todos: newTodos, loading: false });
     } catch (e) {
-      console.log(e);
+      console.log('ERROR');
     }
   };
 
@@ -111,6 +119,7 @@ export default class TodoList extends Component {
     const newTodo = { ...this.state.todos[id] };
     newTodo.completed = !newTodo.completed;
     try {
+      this.setState({ loading: true });
       const res = await fetch(`/api/todos/${id}`, {
         method: 'PUT',
         body: JSON.stringify(newTodo),
@@ -124,9 +133,9 @@ export default class TodoList extends Component {
         text: data.text,
         completed: data.completed,
       };
-      this.setState({ todos: newTodos });
+      this.setState({ todos: newTodos, loading: false });
     } catch (e) {
-      console.log(e);
+      console.log('ERROR');
     }
   };
 
@@ -209,6 +218,7 @@ export default class TodoList extends Component {
         ) : (
           <ul className={styles.todosContainer}>{todos}</ul>
         )}
+        <Loading show={this.state.loading}></Loading>
       </div>
     );
   }
