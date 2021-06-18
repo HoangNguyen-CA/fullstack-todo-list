@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import Todo from '../../components/Todo/Todo';
 import TodoInput from '../../components/TodoInput/TodoInput';
+import Button from '../../components/Button/Button';
 import styles from './TodoList.module.css';
 
 export default class TodoList extends Component {
   state = {
     todos: {},
+    show: {
+      completed: true,
+      uncompleted: true,
+    },
     addTodoVal: '',
     editTodoVal: '',
     isEditting: false,
@@ -125,10 +130,29 @@ export default class TodoList extends Component {
     }
   };
 
+  handleShowAll = () => {
+    const newShow = { completed: true, uncompleted: true };
+    this.setState({ show: newShow });
+  };
+
+  handleShowCompleted = () => {
+    const newShow = { completed: true, uncompleted: false };
+    this.setState({ show: newShow });
+  };
+
+  handleShowUncompleted = () => {
+    const newShow = { completed: false, uncompleted: true };
+    this.setState({ show: newShow });
+  };
+
   render() {
     const todos = [];
+    const showCompleted = this.state.show.completed;
+    const showUncompleted = this.state.show.uncompleted;
+    const showAll = showCompleted && showUncompleted;
+
     for (let [id, todo] of Object.entries(this.state.todos)) {
-      todos.push(
+      const todoElement = (
         <Todo
           id={id}
           key={id}
@@ -139,18 +163,42 @@ export default class TodoList extends Component {
           toggleComplete={this.handleToggleComplete}
         ></Todo>
       );
+      if (showCompleted && showUncompleted) {
+        todos.push(todoElement);
+      } else if (showCompleted && todo.completed === true) {
+        todos.push(todoElement);
+      } else if (showUncompleted && todo.completed === false) {
+        todos.push(todoElement);
+      }
     }
 
     return (
       <div className={styles.mainContainer}>
         <h1 className={styles.header}>Todo List</h1>
-
         <TodoInput
           val={this.state.addTodoVal}
           change={this.handleAddChange}
           submit={this.handleAddTodo}
           label='Add Todo'
         ></TodoInput>
+
+        <div className={styles.buttonContainer}>
+          <Button clicked={this.handleShowAll} active={showAll}>
+            Show All
+          </Button>
+          <Button
+            clicked={this.handleShowCompleted}
+            active={showCompleted && !showAll}
+          >
+            Show Completed
+          </Button>
+          <Button
+            clicked={this.handleShowUncompleted}
+            active={showUncompleted && !showAll}
+          >
+            Show Uncompleted
+          </Button>
+        </div>
         {this.state.isEditting ? (
           <TodoInput
             val={this.state.editTodoVal}

@@ -1,0 +1,25 @@
+.button {
+  text-transform: uppercase;
+
+  border: none;
+
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    var(--colors-primary),
+    var(--colors-primary-light)
+  );
+  color: var(--colors-light);
+
+  padding: 0.8em 1.5em;
+  margin: 0.5em 0.5em;
+  border-radius: var(--radius-normal);
+}
+
+.button:hover {
+  text-decoration: underline;
+}
+
+.active {
+  border: 2px solid var(--colors-pink);
+}
