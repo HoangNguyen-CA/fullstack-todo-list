@@ -1,16 +1,12 @@
 .todo {
   padding: 1.1em 1.5em;
-  margin: 0.8em 0;
+  margin-bottom: 0.8em;
   border-radius: 5px;
 
   list-style-type: none;
   font-size: 1em;
   display: flex;
   justify-content: space-between;
-}
-
-.todo:nth-child(1) {
-  margin: 0;
 }
 
 .todo:nth-last-child(1) {
