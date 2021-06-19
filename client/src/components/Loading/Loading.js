@@ -5,7 +5,7 @@ const Loading = (props) => {
   return (
     <>
       {props.show ? (
-        <div className={styles.backdrop}>
+        <div className={styles.backdrop} onClick={props.clicked}>
           <div className={styles.spinner}>
             <div className={styles['double-bounce1']}></div>
             <div className={styles['double-bounce2']}></div>

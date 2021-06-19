@@ -154,6 +154,10 @@ export default class TodoList extends Component {
     this.setState({ show: newShow });
   };
 
+  handleStopLoading = () => {
+    this.setState({ loading: false });
+  };
+
   render() {
     const todos = [];
     const showCompleted = this.state.show.completed;
@@ -218,7 +222,10 @@ export default class TodoList extends Component {
         ) : (
           <ul className={styles.todosContainer}>{todos}</ul>
         )}
-        <Loading show={this.state.loading}></Loading>
+        <Loading
+          show={this.state.loading}
+          clicked={this.handleStopLoading}
+        ></Loading>
       </div>
     );
   }
