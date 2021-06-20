@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const app = express();
 const port = 5000;
 const MONGODB_URL = 'mongodb://localhost/todolist';
+const AppError = require('./AppError');
 
 app.use(morgan('tiny'));
 app.use(express.json()); // body parser
@@ -22,6 +23,18 @@ mongoose
   });
 
 app.use('/api/todos', require('./routes/api/todos'));
+
+//404 route
+app.use((req, res, next) => {
+  next(new AppError(404, 'Page Does Not Exist.'));
+});
+
+//custom error handler
+app.use((err, req, res, next) => {
+  console.log(err.message);
+  const { status = 500, message = 'Something Went Wrong!' } = err;
+  res.status(status).json({ status, error: message });
+});
 
 app.listen(port, () => {
   console.log(`LISTENING ON PORT ${port}`);
