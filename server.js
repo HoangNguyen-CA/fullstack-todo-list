@@ -24,6 +24,16 @@ mongoose
 
 app.use('/api/todos', require('./routes/api/todos'));
 
+//Serve static files
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static('client/build'));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+  });
+}
+
 //404 route
 app.use((req, res, next) => {
   next(new AppError(404, 'Page Does Not Exist.'));
@@ -35,16 +45,6 @@ app.use((err, req, res, next) => {
   const { status = 500, message = 'Something Went Wrong!' } = err;
   res.status(status).json({ status, error: message });
 });
-
-//Serve static files
-if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static('client/build'));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
-  });
-}
 
 app.listen(port, () => {
   console.log(`LISTENING ON PORT ${port}`);
