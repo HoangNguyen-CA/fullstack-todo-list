@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,4 +59,15 @@
     transform: scale(1);
     -webkit-transform: scale(1);
   }
+}
+
+.errorContainer {
+  font-size: 1.1rem;
+  background-color: rgb(209, 50, 50);
+  padding: 1em 2em;
+  border-radius: var(--radius-normal);
+}
+
+.errorText {
+  color: var(--colors-light);
 }

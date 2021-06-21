@@ -21,18 +21,37 @@ export default class TodoList extends Component {
     isEditting: false,
   };
 
-  async loadTodos() {
-    const data = await getTodos();
-    const newTodos = {};
-    for (const todo of data) {
-      newTodos[todo._id] = { text: todo.text, completed: todo.completed };
-    }
-    this.setState({ todos: newTodos });
-  }
-
   handleAddChange = (e) => {
     this.setState({ addTodoVal: e.target.value });
   };
+
+  handleEditChange = (e) => {
+    this.setState({ editTodoVal: e.target.value });
+  };
+
+  handleStartEdit = (id) => {
+    const editText = this.state.todos[id].text;
+    this.setState({
+      isEditting: true,
+      currentEditID: id,
+      editTodoVal: editText,
+    });
+  };
+
+  async loadTodos() {
+    try {
+      this.setState({ loading: true });
+
+      const data = await getTodos();
+      const newTodos = {};
+      for (const todo of data) {
+        newTodos[todo._id] = { text: todo.text, completed: todo.completed };
+      }
+      this.setState({ todos: newTodos, loading: false });
+    } catch (e) {
+      this.setState({ loading: false, error: e.message });
+    }
+  }
 
   handleAddTodo = async () => {
     try {
@@ -46,21 +65,8 @@ export default class TodoList extends Component {
       newTodos[data._id] = { text: data.text, completed: data.completed };
       this.setState({ todos: newTodos, addTodoVal: '', loading: false });
     } catch (e) {
-      console.log(e.message);
+      this.setState({ loading: false, error: e.message });
     }
-  };
-
-  handleStartEdit = (id) => {
-    const editText = this.state.todos[id].text;
-    this.setState({
-      isEditting: true,
-      currentEditID: id,
-      editTodoVal: editText,
-    });
-  };
-
-  handleEditChange = (e) => {
-    this.setState({ editTodoVal: e.target.value });
   };
 
   handleEditTodo = async () => {
@@ -78,7 +84,7 @@ export default class TodoList extends Component {
       };
       this.setState({ todos: newTodos, isEditting: false, loading: false });
     } catch (e) {
-      console.log(e.message);
+      this.setState({ loading: false, error: e.message });
     }
   };
 
@@ -92,7 +98,7 @@ export default class TodoList extends Component {
       delete newTodos[id];
       this.setState({ todos: newTodos, loading: false });
     } catch (e) {
-      console.log(e.message);
+      this.setState({ loading: false, error: e.message });
     }
   };
 
@@ -111,7 +117,7 @@ export default class TodoList extends Component {
       };
       this.setState({ todos: newTodos, loading: false });
     } catch (e) {
-      console.log(e.message);
+      this.setState({ loading: false, error: e.message });
     }
   };
 
@@ -131,7 +137,7 @@ export default class TodoList extends Component {
   };
 
   handleHideModal = () => {
-    this.setState({ loading: false });
+    this.setState({ loading: false, error: '' });
   };
 
   componentDidMount() {

@@ -1,6 +1,8 @@
 export const getTodos = async () => {
   const res = await fetch('/api/todos');
   const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+
   return data;
 };
 
@@ -11,6 +13,10 @@ export const addTodo = async (todo) => {
     body: JSON.stringify(todo),
   });
   const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+
+  if (data == null) throw new Error('Failed to add todo.');
+
   return data;
 };
 
@@ -20,7 +26,11 @@ export const editTodo = async (id, todo) => {
     body: JSON.stringify(todo),
     headers: { 'Content-Type': 'application/json' },
   });
+
   const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+
+  if (data == null) throw new Error('Failed to edit todo.');
   return data;
 };
 
@@ -28,6 +38,9 @@ export const deleteTodo = async (id) => {
   const res = await fetch(`/api/todos/${id}`, {
     method: 'DELETE',
   });
+
   const data = await res.json();
-  if (data == null) throw new Error('Failed to delete TODO.');
+  if (!res.ok) throw new Error(data.error);
+
+  if (data == null) throw new Error('Failed to delete todo.');
 };
