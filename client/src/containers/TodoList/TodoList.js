@@ -53,7 +53,8 @@ export default class TodoList extends Component {
     }
   }
 
-  handleAddTodo = async () => {
+  handleAddTodo = async (e) => {
+    e.preventDefault();
     try {
       const inputTodo = { text: this.state.addTodoVal };
       this.setState({ loading: true });
@@ -69,7 +70,8 @@ export default class TodoList extends Component {
     }
   };
 
-  handleEditTodo = async () => {
+  handleEditTodo = async (e) => {
+    e.preventDefault();
     try {
       const id = this.state.currentEditID;
       const inputTodo = { text: this.state.editTodoVal };

@@ -3,17 +3,17 @@ import styles from './TodoInput.module.css';
 
 const TodoInput = (props) => {
   return (
-    <div className={styles.container}>
+    <form className={styles.container} onSubmit={props.submit}>
       <input
         value={props.val}
         onChange={props.change}
         className={styles.input}
         autoFocus
       ></input>
-      <button onClick={props.submit} className={styles.button}>
+      <button type='submit' className={styles.button}>
         {props.label}
       </button>
-    </div>
+    </form>
   );
 };
 
