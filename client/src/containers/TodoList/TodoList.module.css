@@ -1,18 +1,20 @@
 .mainContainer {
-  width: 80%;
-  max-width: 35em;
+  width: 90%;
+  max-width: var(--max-width);
+  min-width: var(--min-width);
+
   padding: 2em 2.5em;
   border-radius: 0.5em;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 3em;
   background-color: var(--colors-dark);
   color: white;
 }
 
 .header {
-  font-size: 2rem;
+  font-size: 1.8rem;
+  text-align: center;
 }
 
 .buttonContainer {

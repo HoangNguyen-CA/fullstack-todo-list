@@ -8,11 +8,11 @@
   flex-grow: 1;
   border: 2px solid var(--colors-primary);
 
-  font-size: 1em;
+  font-size: 1rem;
   background-color: transparent;
   color: var(--colors-light);
-
   padding: 0.8em 1.1em;
+
   border-radius: var(--radius-normal) 0px 0px var(--radius-normal);
   outline: none;
 }
@@ -23,6 +23,7 @@
 
 .button {
   text-transform: uppercase;
+  font-size: 0.8rem;
 
   border: none;
 

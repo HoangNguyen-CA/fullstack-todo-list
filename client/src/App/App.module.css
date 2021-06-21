@@ -2,4 +2,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 3em;
+
+  background: linear-gradient(
+    to right,
+    var(--colors-primary),
+    var(--colors-primary-light)
+  );
+
+  min-height: 100vh;
+  min-width: var(--min-width);
 }

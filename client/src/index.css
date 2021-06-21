@@ -8,7 +8,7 @@ html {
   --colors-dark: #161616;
   --colors-primary: rgb(86, 12, 255);
   --colors-primary-dark: rgb(65, 0, 218);
-  --colors-primary-light: rgb(149, 36, 255);
+  --colors-primary-light: #5a66ff;
   --colors-blue: #127bff;
   --colors-blue-dark: rgb(5, 99, 214);
   --colors-orange: #fe5413;
@@ -20,6 +20,10 @@ html {
   --colors-light: white;
   --colors-gray: #505c61;
   --radius-normal: 3px;
+
+  --max-width: 650px;
+  --min-width: 400px;
+  font-size: 80%;
 }
 
 body {
@@ -33,4 +37,10 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+@media (min-width: 600px) {
+  html {
+    font-size: 100%;
+  }
 }

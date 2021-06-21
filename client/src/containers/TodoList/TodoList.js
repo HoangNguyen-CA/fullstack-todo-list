@@ -173,7 +173,7 @@ export default class TodoList extends Component {
 
     return (
       <div className={styles.mainContainer}>
-        <h1 className={styles.header}>Todo List</h1>
+        <h1 className={styles.header}>What is the plan for today?</h1>
         <TodoInput
           val={this.state.addTodoVal}
           change={this.handleAddChange}

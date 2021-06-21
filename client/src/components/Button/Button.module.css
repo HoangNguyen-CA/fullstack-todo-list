@@ -1,4 +1,5 @@
 .button {
+  font-size: 0.8rem;
   text-transform: uppercase;
 
   border: none;
@@ -22,5 +23,5 @@
 }
 
 .active {
-  border: 2px solid var(--colors-pink);
+  border: 2px solid var(--colors-light);
 }
