@@ -50,11 +50,14 @@ router.put(
   wrapAsync(async (req, res, next) => {
     const { id } = req.params;
     const { text, completed } = req.body;
-    const updatedTodo = await Todo.findByIdAndUpdate(
-      id,
-      { text, completed },
-      { new: true }
-    );
+
+    let newBody = {};
+    if (text != null) newBody.text = text;
+    if (completed != null) newBody.completed = completed;
+
+    const updatedTodo = await Todo.findByIdAndUpdate(id, newBody, {
+      new: true,
+    });
     if (updatedTodo == null)
       return next(new AppError(400, `Todo with id=${id} does not exist.`));
     res.json(updatedTodo);

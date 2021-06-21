@@ -3,7 +3,8 @@ import Todo from '../../components/Todo/Todo';
 import TodoInput from '../../components/TodoInput/TodoInput';
 import Button from '../../components/Button/Button';
 import styles from './TodoList.module.css';
-import Loading from '../../components/Loading/Loading';
+import Modal from '../../components/Modal/Modal';
+import { getTodos, addTodo, editTodo, deleteTodo } from './API_Util';
 
 export default class TodoList extends Component {
   state = {
@@ -13,15 +14,15 @@ export default class TodoList extends Component {
       uncompleted: true,
     },
     loading: false,
+    error: '',
     addTodoVal: '',
     editTodoVal: '',
-    isEditting: false,
     currentEditID: '',
+    isEditting: false,
   };
 
   async loadTodos() {
-    const res = await fetch('/api/todos');
-    const data = await res.json();
+    const data = await getTodos();
     const newTodos = {};
     for (const todo of data) {
       newTodos[todo._id] = { text: todo.text, completed: todo.completed };
@@ -29,32 +30,23 @@ export default class TodoList extends Component {
     this.setState({ todos: newTodos });
   }
 
-  componentDidMount() {
-    this.loadTodos();
-  }
-
   handleAddChange = (e) => {
     this.setState({ addTodoVal: e.target.value });
   };
 
   handleAddTodo = async () => {
-    const newTodo = { text: this.state.addTodoVal };
     try {
+      const inputTodo = { text: this.state.addTodoVal };
       this.setState({ loading: true });
 
-      const res = await fetch('/api/todos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newTodo),
-      });
-      const data = await res.json();
+      const data = await addTodo(inputTodo);
 
       //update state with result
       const newTodos = { ...this.state.todos };
       newTodos[data._id] = { text: data.text, completed: data.completed };
       this.setState({ todos: newTodos, addTodoVal: '', loading: false });
     } catch (e) {
-      console.log('ERROR');
+      console.log(e.message);
     }
   };
 
@@ -74,18 +66,10 @@ export default class TodoList extends Component {
   handleEditTodo = async () => {
     try {
       const id = this.state.currentEditID;
-      const newTodo = {
-        text: this.state.editTodoVal,
-        completed: this.state.todos[id].completed,
-      };
-
+      const inputTodo = { text: this.state.editTodoVal };
       this.setState({ loading: true });
-      const res = await fetch(`/api/todos/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(newTodo),
-        headers: { 'Content-Type': 'application/json' },
-      });
-      const data = await res.json();
+
+      const data = await editTodo(id, inputTodo);
 
       const newTodos = { ...this.state.todos };
       newTodos[data._id] = {
@@ -94,39 +78,31 @@ export default class TodoList extends Component {
       };
       this.setState({ todos: newTodos, isEditting: false, loading: false });
     } catch (e) {
-      console.log('ERROR');
+      console.log(e.message);
     }
   };
 
   handleDeleteTodo = async (id) => {
     try {
       this.setState({ loading: true });
-      const res = await fetch(`/api/todos/${id}`, {
-        method: 'DELETE',
-      });
-      const data = await res.json();
-      if (data == null) throw new Error('deletion failed');
+
+      await deleteTodo(id);
 
       const newTodos = { ...this.state.todos };
       delete newTodos[id];
       this.setState({ todos: newTodos, loading: false });
     } catch (e) {
-      console.log('ERROR');
+      console.log(e.message);
     }
   };
 
   handleToggleComplete = async (id) => {
-    const newTodo = { ...this.state.todos[id] };
-    newTodo.completed = !newTodo.completed;
     try {
+      const inputTodo = { ...this.state.todos[id] };
+      inputTodo.completed = !inputTodo.completed;
       this.setState({ loading: true });
-      const res = await fetch(`/api/todos/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(newTodo),
-        headers: { 'Content-Type': 'application/json' },
-      });
-      const data = await res.json();
-      if (data == null) throw new Error('deletion failed');
+
+      const data = await editTodo(id, inputTodo);
 
       const newTodos = { ...this.state.todos };
       newTodos[data._id] = {
@@ -135,7 +111,7 @@ export default class TodoList extends Component {
       };
       this.setState({ todos: newTodos, loading: false });
     } catch (e) {
-      console.log('ERROR');
+      console.log(e.message);
     }
   };
 
@@ -154,9 +130,13 @@ export default class TodoList extends Component {
     this.setState({ show: newShow });
   };
 
-  handleStopLoading = () => {
+  handleHideModal = () => {
     this.setState({ loading: false });
   };
+
+  componentDidMount() {
+    this.loadTodos();
+  }
 
   render() {
     const todos = [];
@@ -222,10 +202,11 @@ export default class TodoList extends Component {
         ) : (
           <ul className={styles.todosContainer}>{todos}</ul>
         )}
-        <Loading
-          show={this.state.loading}
-          clicked={this.handleStopLoading}
-        ></Loading>
+        <Modal
+          loading={this.state.loading}
+          error={this.state.error}
+          clicked={this.handleHideModal}
+        ></Modal>
       </div>
     );
   }

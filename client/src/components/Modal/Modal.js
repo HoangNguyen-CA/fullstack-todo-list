@@ -1,10 +1,10 @@
 import React from 'react';
-import styles from './Loading.module.css';
+import styles from './Modal.module.css';
 
-const Loading = (props) => {
+const Modal = (props) => {
   return (
     <>
-      {props.show ? (
+      {props.error || props.loading ? (
         <div className={styles.backdrop} onClick={props.clicked}>
           <div className={styles.spinner}>
             <div className={styles['double-bounce1']}></div>
@@ -18,4 +18,4 @@ const Loading = (props) => {
   );
 };
 
-export default Loading;
+export default Modal;
